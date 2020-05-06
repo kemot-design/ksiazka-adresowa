@@ -16,12 +16,13 @@ struct User {
 void diplayUserMenu();
 void addNewUser(vector <User> &users);
 void saveUsersToFile(const vector <User> &users);
-//void loadUsersFromFile(vector <User> &users);
+void loadUsersFromFile(vector <User> &users);
+int findSeparatorIndex(string text);
 
 int main()
 {
     vector <User> users;
-    //loadUsersFromFile(users);
+    loadUsersFromFile(users);
 
     int selection = 0;
     while(1) {
@@ -34,8 +35,18 @@ int main()
             cin.ignore(numeric_limits<streamsize>::max(),'\n');
             cin >> selection;
         }
+
+
+        int rozmiar = users.size();
+
         switch(selection) {
         case 1:
+            for(int i = 0 ; i < rozmiar ; i++){
+                cout << users[i].userID << endl;
+                cout << users[i].name << endl;
+                cout << users[i].password << endl;
+                system("pause");
+            }
             //loggin();
             break;
         case 2:
@@ -108,12 +119,56 @@ void saveUsersToFile(const vector <User> &users){
         return;
     }
 
-    vector <User> :: const_iterator itr = users.begin();
-    for(itr ; itr != users.end() ; ++itr) {
-        saveFile << itr->userID << "|";
-        saveFile << itr->name << "|";
-        saveFile << itr->password << endl;
+    vector <User> :: const_iterator citr = users.begin();
+    for(citr ; citr != users.end() ; ++citr) {
+        saveFile << citr->userID << "|";
+        saveFile << citr->name << "|";
+        saveFile << citr->password << "|" << endl;
     }
     saveFile.close();
+}
+
+void loadUsersFromFile(vector <User> &users){
+    fstream loadFile("users.txt", ios::in);
+    if(!loadFile.is_open()){
+        return;
+    }
+
+    string loadedData, loadedLine;
+    User loadedUser;
+
+    while(getline(loadFile,loadedLine)) {
+        for(int i = 0 ; i < 3 ; i++){
+            int separatorIndex = findSeparatorIndex(loadedLine);
+            loadedData = loadedLine.substr(0,separatorIndex);
+            switch(i){
+                case 0:
+                    loadedUser.userID = (int)loadedData[0] - 48;
+                    break;
+                case 1:
+                    loadedUser.name = loadedData;
+                    break;
+                case 2:
+                    loadedUser.password = loadedData;
+                    break;
+                default:
+                    cout << "Something went wrong with loading from string" << endl;
+                    break;
+            }
+            loadedLine.erase(0,separatorIndex+1);
+        }
+        users.push_back(loadedUser);
+    }
+    loadFile.close();
+}
+
+int findSeparatorIndex(string text){
+    int separatorIndex = 0;
+    for(int i = 0 ; i < text.length() ; i++){
+        if(text[i] == '|') return separatorIndex;
+        separatorIndex++;
+    }
+    cout << "Couldnt find separator" << endl;
+    return 0;
 }
 
