@@ -9,8 +9,9 @@
 using namespace std;
 
 struct User {
-    string name, password;
-    int userID;
+    string name = "";
+    string password = "";
+    int userID = 0;
 };
 
 void diplayUserMenu();
@@ -18,11 +19,14 @@ void addNewUser(vector <User> &users);
 void saveUsersToFile(const vector <User> &users);
 void loadUsersFromFile(vector <User> &users);
 int findSeparatorIndex(string text);
+User findLoggedUser(const vector <User> &users);
+//void adressBook(User loggedUser);
 
 int main()
 {
     vector <User> users;
     loadUsersFromFile(users);
+    User loggedUser;
 
     int selection = 0;
     while(1) {
@@ -36,18 +40,18 @@ int main()
             cin >> selection;
         }
 
-
-        int rozmiar = users.size();
-
         switch(selection) {
         case 1:
-            for(int i = 0 ; i < rozmiar ; i++){
-                cout << users[i].userID << endl;
-                cout << users[i].name << endl;
-                cout << users[i].password << endl;
+            loggedUser = findLoggedUser(users);
+            if(loggedUser.userID != 0){
+                system("cls");
                 system("pause");
             }
-            //loggin();
+            else{
+                system("cls");
+                cout << "Bledne dane logowania" << endl;
+                Sleep(1500);
+            }
             break;
         case 2:
             addNewUser(users);
@@ -171,4 +175,29 @@ int findSeparatorIndex(string text){
     cout << "Couldnt find separator" << endl;
     return 0;
 }
+
+User findLoggedUser(const vector <User> &users){
+    system("cls");
+    string login, password;
+    cout << "----- LOGOWANIE -----" << endl;
+    cout << " Login: ";
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(),'\n');
+    cin >> login;
+    cout << " Password: ";
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(),'\n');
+    cin >> password;
+
+    int registeredUsersNumber = users.size();
+
+    for(int i = 0 ; i < registeredUsersNumber ; i++){
+        if(users[i].name == login && users[i].password == password){
+            return users[i];
+        }
+    }
+    User noUser;
+    return noUser;
+}
+
 
