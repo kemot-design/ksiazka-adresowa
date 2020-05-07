@@ -28,8 +28,8 @@ void addNewUser(vector <User> &users);
 void saveUsersToFile(const vector <User> &users);
 void loadUsersFromFile(vector <User> &users);
 int findSeparatorIndex(string text);
-User findLoggedUser(const vector <User> &users);
-void adressBookApp(User loggedUser);
+User* findLoggedUser(vector <User> &users);
+void adressBookApp(User *loggedUser);
 void displayMainMenu();
 void addNewContact(vector <Recipent> &adressBook, int userId);
 void saveModificationsToFile(const vector <Recipent> &adressBook, Recipent modifiedContact, bool recipentToDelete);
@@ -46,12 +46,13 @@ bool isPhoneNumberValid(string word);
 bool isEmailAdressValid(string word);
 int findBiggestId();
 int strToInt(string numberStr);
+void changePassword(User *loggedUser);
 
 int main()
 {
     vector <User> users;
     loadUsersFromFile(users);
-    User loggedUser;
+    User *loggedUser = NULL;
 
     int selection = 0;
     while(1) {
@@ -68,7 +69,7 @@ int main()
         switch(selection) {
         case 1:
             loggedUser = findLoggedUser(users);
-            if(loggedUser.userId != 0){
+            if(loggedUser != NULL){
                 system("cls");
                 adressBookApp(loggedUser);
             }
@@ -83,6 +84,7 @@ int main()
             saveUsersToFile(users);
             break;
         case 3:
+            saveUsersToFile(users);
             exit(0);
             break;
         default:
@@ -201,7 +203,7 @@ int findSeparatorIndex(string text){
     return 0;
 }
 
-User findLoggedUser(const vector <User> &users){
+User* findLoggedUser(vector <User> &users){
     system("cls");
     string login, password;
     cout << "----- LOGOWANIE -----" << endl;
@@ -218,16 +220,15 @@ User findLoggedUser(const vector <User> &users){
 
     for(int i = 0 ; i < registeredUsersNumber ; i++){
         if(users[i].name == login && users[i].password == password){
-            return users[i];
+            return &users[i];
         }
     }
-    User noUser;
-    return noUser;
+    return NULL;
 }
 
-void adressBookApp(User loggedUser) {
+void adressBookApp(User *loggedUser) {
     vector <Recipent> adressBook;
-    int loggedUserId = loggedUser.userId;
+    int loggedUserId = loggedUser->userId;
     loadAdressbookFromFile(adressBook, loggedUserId);
 
     int selection = 0;
@@ -261,6 +262,9 @@ void adressBookApp(User loggedUser) {
         case 6:
             editRecipent(adressBook);
             break;
+        case 7:
+            changePassword(loggedUser);
+            break;
         case 9:
             return;
         default:
@@ -281,6 +285,7 @@ void displayMainMenu() {
     cout << "4. Wyswietl wszystkich adresatow" << endl;
     cout << "5. Usun adresata" << endl;
     cout << "6. Edytuj adresata" << endl;
+    cout << "7. Zmien haslo" << endl;
     cout << "9. Wyjdz" << endl;
     cout << "Twoj wybor: ";
 }
@@ -701,8 +706,21 @@ int findBiggestId(){
     while(getline(loadFile,loadedLine)) {
         int separatorIndex = findSeparatorIndex(loadedLine);
         loadedData = loadedLine.substr(0,separatorIndex);
-        biggestId = (int)loadedData[0] - 48;
+        biggestId = strToInt(loadedData);
     }
     loadFile.close();
     return biggestId;
+}
+
+void changePassword(User *loggedUser){
+    system("cls");
+    string newPassword = "";
+
+    cout << "Enter new password: ";
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(),'\n');
+    cin >> newPassword;
+    loggedUser->password = newPassword;
+    cout << "Twoje haslo zostalo zmienione" << endl;
+    Sleep(1500);
 }
