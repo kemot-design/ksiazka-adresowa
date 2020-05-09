@@ -47,6 +47,7 @@ bool isEmailAdressValid(string word);
 int findBiggestId();
 int strToInt(string numberStr);
 void changePassword(User *loggedUser);
+void saveNewUserPasswordToFile(const User *loggedUser);
 
 int main()
 {
@@ -84,7 +85,6 @@ int main()
             saveUsersToFile(users);
             break;
         case 3:
-            saveUsersToFile(users);
             exit(0);
             break;
         default:
@@ -264,6 +264,7 @@ void adressBookApp(User *loggedUser) {
             break;
         case 7:
             changePassword(loggedUser);
+            saveNewUserPasswordToFile(loggedUser);
             break;
         case 9:
             return;
@@ -724,3 +725,19 @@ void changePassword(User *loggedUser){
     cout << "Twoje haslo zostalo zmienione" << endl;
     Sleep(1500);
 }
+
+void saveNewUserPasswordToFile(const User *loggedUser){
+
+    vector<User> allUsers;
+    loadUsersFromFile(allUsers);
+    int numberOfUsers = allUsers.size();
+    for(int i = 0 ; i < numberOfUsers ; i++){
+        if(allUsers[i].userId == loggedUser->userId){
+            allUsers[i].password = loggedUser->password;
+        }
+    }
+    saveUsersToFile(allUsers);
+}
+
+
+
