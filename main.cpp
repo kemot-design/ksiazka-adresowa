@@ -37,7 +37,7 @@ bool isEmailAdressValid(string word);
 int findBiggestId();
 int strToInt(string numberStr);
 void changePassword(User *loggedUser);
-void saveNewUserPasswordToFile(const User *loggedUser);
+void saveNewUserPasswordToFile(User *loggedUser);
 
 int main()
 {
@@ -580,7 +580,7 @@ void changePassword(User *loggedUser){
     system("cls");
     string newPassword = "";
 
-    cout << "Enter new password: ";
+    cout << "Wpisz nowe haslo: ";
     cin.clear();
     cin.ignore(numeric_limits<streamsize>::max(),'\n');
     cin >> newPassword;
@@ -589,17 +589,18 @@ void changePassword(User *loggedUser){
     Sleep(1500);
 }
 
-void saveNewUserPasswordToFile(const User *loggedUser){
+void saveNewUserPasswordToFile(User *loggedUser){
 
     vector<User> allUsers;
-    loadUsersFromFile(allUsers);
+    loggedUser->loadUsersFromFile(allUsers);
     int numberOfUsers = allUsers.size();
     for(int i = 0 ; i < numberOfUsers ; i++){
-        if(allUsers[i].userId == loggedUser->userId){
-            allUsers[i].password = loggedUser->password;
+        if(allUsers[i].getUserId() == loggedUser->getUserId()){
+            string newPassword = loggedUser->getPassword();
+            allUsers[i].setPassword(newPassword);
         }
     }
-    saveUsersToFile(allUsers);
+    loggedUser->saveUsersToFile(allUsers);
 }
 
 

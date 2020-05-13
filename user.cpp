@@ -154,3 +154,7 @@ int User::getUserId(){
 void User::setPassword(string newPassword){
     password = newPassword;
 }
+
+string User::getPassword(){
+    return password;
+}

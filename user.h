@@ -12,6 +12,7 @@ public:
     User* findLoggedUser(vector <User> &users);
     int getUserId();
     void setPassword(string newPassword);
+    string getPassword();
 
 private:
     string name;
