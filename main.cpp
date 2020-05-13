@@ -1,13 +1,9 @@
 #include <iostream>
-#include <stdlib.h>
 #include <limits>
-#include <ios>
 #include <windows.h>
 #include <fstream>
 #include <vector>
-#include <string>
 #include <sstream>
-#include <stdio.h>
 #include "user.h"
 
 using namespace std;
@@ -18,7 +14,6 @@ struct Recipent {
     int userId = 0;
 };
 
-int findSeparatorIndex(string text);
 void adressBookApp(User *loggedUser);
 void displayMainMenu();
 void addNewContact(vector <Recipent> &adressBook, int userId);
@@ -27,7 +22,6 @@ void saveNewContactToFile(const vector <Recipent> &adressBook, int userId);
 void displayAdressBook(const vector <Recipent> &adressBook);
 void displayRecipentData(Recipent recipentToDisplay);
 void loadAdressbookFromFile(vector <Recipent> &adressBook, int userId);
-int findSeparatorIndex(string text);
 void displayRecipentByName(const vector <Recipent> &adressBook);
 void displayRecipentBySurname(const vector <Recipent> &adressBook);
 void deleteRecipent(vector <Recipent> &adressBook);
@@ -42,13 +36,12 @@ void saveNewUserPasswordToFile(User *loggedUser);
 int main()
 {
     vector <User> users;
-    User emptyUser;
-    emptyUser.loadUsersFromFile(users);
     User *loggedUser = NULL;
+    loggedUser->loadUsersFromFile(users);
 
     int selection = 0;
     while(1) {
-        emptyUser.diplayUserMenu();
+        loggedUser->diplayUserMenu();
         cin >> selection;
 
         while(cin.fail()){ //Zabezpiecznie przed wpisaniem innych znakow niz liczby
@@ -60,7 +53,7 @@ int main()
 
         switch(selection) {
         case 1:
-            loggedUser = emptyUser.findLoggedUser(users);
+            loggedUser = loggedUser->findLoggedUser(users);
             if(loggedUser != NULL){
                 system("cls");
                 adressBookApp(loggedUser);
@@ -72,11 +65,11 @@ int main()
             }
             break;
         case 2:
-            emptyUser.addNewUser(users);
-            emptyUser.saveUsersToFile(users);
+            loggedUser->addNewUser(users);
+            loggedUser->saveUsersToFile(users);
             break;
         case 3:
-            emptyUser.saveUsersToFile(users);
+            loggedUser->saveUsersToFile(users);
             exit(0);
             break;
         default:
@@ -602,6 +595,3 @@ void saveNewUserPasswordToFile(User *loggedUser){
     }
     loggedUser->saveUsersToFile(allUsers);
 }
-
-
-

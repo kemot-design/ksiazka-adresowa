@@ -1,13 +1,8 @@
 #include <iostream>
-#include <stdlib.h>
 #include <limits>
-#include <ios>
 #include <windows.h>
 #include <fstream>
 #include <vector>
-#include <string>
-#include <sstream>
-#include <stdio.h>
 #include "user.h"
 
 using namespace std;
